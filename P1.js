@@ -2,15 +2,17 @@
 
 var amqp = require('amqplib/callback_api');
 
-amqp.connect('amqp://localhost', function(err, conn) {
-	conn.createChannel(function(err, ch){
-		
-		 var q = 'hello';
+amqp.connect('amqps://localhost', function(err, conn) {
+  conn.createChannel(function(err, ch) {
+    var ex = 'topic_logs';
+    var args = process.argv.slice(2);
+    var key = (args.length > 0) ? args[0] : 'anonymous.info';
+    var msg = args.slice(1).join(' ') || 'Hello World!';
 
-	    ch.assertQueue(q, {durable: false});
-	    // Note: on Node 6 Buffer.from(msg) should be used
-	    ch.sendToQueue(q, new Buffer('Hello World!'));
-	    console.log(" [x] Sent 'Hello World!'");
-	});
-	setTimeout(function() { conn.close(); process.exit(0) }, 500);
+    ch.assertExchange(ex, 'topic', {durable: false});
+    ch.publish(ex, key, new Buffer(msg));
+    console.log(" [x] Sent %s:'%s'", key, msg);
+  });
+
+  setTimeout(function() { conn.close(); process.exit(0) }, 500);
 });
