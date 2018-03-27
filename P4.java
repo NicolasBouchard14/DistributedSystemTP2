@@ -53,7 +53,7 @@ public class P4 {
 
 		
 		//String cleDeLiaison = "log.message";
-		String cleDeLiaison = "#";
+		String cleDeLiaison = "tp2.resultat";
 		
 		// lier la file d'attente a l'echangeur
 		canalDeCommunication.queueBind(NOM_FILE_DATTENTE, EXCHANGE_NAME, cleDeLiaison);

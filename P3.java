@@ -18,34 +18,42 @@ public class P3 {
   private static final String EXCHANGE_NAME = "topic_logs";
 
   public static void main(String[] argv) throws Exception {
-    ConnectionFactory factory = new ConnectionFactory();
-    factory.setHost("192.168.142.131");
-    Connection connection = factory.newConnection();
-    Channel channel = connection.createChannel();
+		String EXCHANGE_NAME = "echangeur_topic02";
+		String NOM_FILE_DATTENTE = "file_d_attente02";
+		//String hostName = "192.168.183.129";
+		boolean autoAck = false;
+		boolean durable = true;
+		boolean passive = true; // a true, on suppose que l'echangeur existe deja
+		boolean autoDelete = false; // ne pas supprimer l'echangeur lorsqu'aucun client n'est connecte
+		boolean exclusive = false;
 
-    channel.exchangeDeclare(EXCHANGE_NAME, "topic");
-    String queueName = channel.queueDeclare().getQueue();
+		// se connecter au broker RabbitMQ
+		ConnectionFactory factory = new ConnectionFactory();
 
-    if (argv.length < 1) {
-      System.err.println("Usage: ReceiveLogsTopic [binding_key]...");
-      System.exit(1);
-    }
+		// indiquer les parametres de la connexion
+		factory.setUsername("guest");
+		factory.setPassword("guest")
+		factory.setPort(5672);
+		factory.setVirtualHost("/");
+		factory.setHost("localhost");
 
-    for (String bindingKey : argv) {
-      channel.queueBind(queueName, EXCHANGE_NAME, bindingKey);
-    }
+		// creer une nouvelle connexion
+		Connection connexion = factory.newConnection();
 
-    System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
-
-    Consumer consumer = new DefaultConsumer(channel) {
-      @Override
-      public void handleDelivery(String consumerTag, Envelope envelope,
-                                 AMQP.BasicProperties properties, byte[] body) throws IOException {
-        String message = new String(body, "UTF-8");
-        System.out.println(" [x] Received '" + envelope.getRoutingKey() + "':'" + message + "'");
-      }
-    };
-    channel.basicConsume(queueName, true, consumer);
+		// ouvrir un canal de communication avec le Broker pour l'envoi et la
+		// reception de messages
+		Channel canalDeCommunication = connexion.createChannel();
+		canalDeCommunication.exchangeDeclare(EXCHANGE_NAME, "topic", passive, durable, autoDelete, null);
+        
+        //Clé de liaison et message
+		String cleDeLiaison = "tp2.resultat";	
+        String message = base64String;
+		
+		System.out.println(" -* En attente de messages ... pour arreter pressez CTRL+C");
+        canalDeCommunication.basicPublish()
+        
+        channel.close();
+        connection.close();
   }
   
   //https://stackoverflow.com/questions/12879540/image-resizing-in-java-to-reduce-image-size#12879764
