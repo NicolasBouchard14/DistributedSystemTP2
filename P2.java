@@ -42,7 +42,7 @@ public class P2 {
   
   //https://tech.yandex.com/translate/doc/dg/reference/translate-docpage/
   //https://stackoverflow.com/questions/2793150/how-to-use-java-net-urlconnection-to-fire-and-handle-http-requests
-  public static String translateToFrench (String text)
+  private static String translateToFrench (String text)
   {
       String frenchText = "";
       
