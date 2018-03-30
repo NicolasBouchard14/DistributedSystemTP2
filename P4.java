@@ -51,8 +51,6 @@ public class P4 {
 		//String nomFileDAttente = canalDeCommunication.queueDeclare().getQueue();
 		canalDeCommunication.queueDeclare(NOM_FILE_DATTENTE , durable, exclusive, autoDelete, null);
 
-		
-		//String cleDeLiaison = "log.message";
 		String cleDeLiaison = "tp2.resultat";
 		
 		// lier la file d'attente a l'echangeur
@@ -72,7 +70,8 @@ public class P4 {
 		        
 		        canalDeCommunication.basicAck(envelope.getDeliveryTag(), false);
 		      }
-		    };
+		};
+		    
 		canalDeCommunication.basicConsume(NOM_FILE_DATTENTE, autoAck, consumer);		
 
 	}

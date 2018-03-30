@@ -39,7 +39,7 @@ public class DatabaseHelper {
         return conn;
     }
 
-    public static boolean InsertText(String text){
+    public static boolean InsertText(String en_text, String fr_text){
 
         Connection conn = CreateConnection();
 
@@ -47,13 +47,13 @@ public class DatabaseHelper {
 
             Statement stmt = conn.createStatement();
 
-            String sql = "INSERT INTO Registration VALUES (100, 'Zara', 'Ali', 18)";
+            String sql = "INSERT INTO texte VALUES ("+en_text+", "+fr_text+")";
             stmt.executeUpdate(sql);
 
         }
         catch(SQLException ex){
 
-            System.out.println("Class not found error: " + ex.getMessage());
+            System.out.println(ex.getMessage());
 
             return false;
 
@@ -72,15 +72,21 @@ public class DatabaseHelper {
 
         try {
 
-            Statement stmt = conn.createStatement();
+            String sql = "INSERT INTO image VALUES (?, ?, ?)";
+            
+            PreparedStatement stm = conn.prepareStatement(sql);
+            
+	    stm.setBytes(1,orig);
+	    stm.setBytes(2,f1);
+	    stm.setBytes(3,f2);
 
-            String sql = "INSERT INTO Registration VALUES (100, 'Zara', 'Ali', 18)";
-            stmt.executeUpdate(sql);
+	    stm.executeUpdate();
+	    stm.close();
 
         }
         catch(SQLException ex){
 
-            System.out.println("Class not found error: " + ex.getMessage());
+            System.out.println(ex.getMessage());
 
             return false;
 
