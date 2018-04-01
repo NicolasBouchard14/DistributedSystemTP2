@@ -32,7 +32,7 @@ public class P3 {
 
 		// indiquer les parametres de la connexion
 		factory.setUsername("guest");
-		factory.setPassword("guest")
+		factory.setPassword("guest");
 		factory.setPort(5672);
 		factory.setVirtualHost("/");
 		factory.setHost("localhost");
@@ -50,7 +50,7 @@ public class P3 {
         String message = base64String;
 		
 		System.out.println(" -* En attente de messages ... pour arreter pressez CTRL+C");
-        canalDeCommunication.basicPublish()
+        canalDeCommunication.basicPublish();
         
         channel.close();
         connection.close();
