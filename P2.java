@@ -2,43 +2,55 @@
 import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 import java.net.*;
+import com.rabbitmq.client.*;
+import java.util.concurrent.atomic.*;
 
 import java.io.*;
 
 //https://stackoverflow.com/questions/26811924/spring-amqp-rabbitmq-3-3-5-access-refused-login-was-refused-using-authentica
 public class P2 {
-  /*private static final String EXCHANGE_NAME = "topic_logs";
+  private static final String EXCHANGE_NAME = "topic_logs";
 
   public static void main(String[] argv) throws Exception {
     ConnectionFactory factory = new ConnectionFactory();
-    factory.setHost("192.168.142.131");
+    factory.setHost("localhost");
     Connection connection = factory.newConnection();
     Channel channel = connection.createChannel();
 
     channel.exchangeDeclare(EXCHANGE_NAME, "topic");
     String queueName = channel.queueDeclare().getQueue();
-
-    if (argv.length < 1) {
-      System.err.println("Usage: ReceiveLogsTopic [binding_key]...");
-      System.exit(1);
-    }
-
-    for (String bindingKey : argv) {
-      channel.queueBind(queueName, EXCHANGE_NAME, bindingKey);
-    }
-
+    
+    channel.queueBind(queueName, EXCHANGE_NAME, bindingKey);
     System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
-
+    
+    AtomicReference<String> translatedText = new AtomicReference<String>();
+    
     Consumer consumer = new DefaultConsumer(channel) {
       @Override
       public void handleDelivery(String consumerTag, Envelope envelope,
                                  AMQP.BasicProperties properties, byte[] body) throws IOException {
         String message = new String(body, "UTF-8");
         System.out.println(" [x] Received '" + envelope.getRoutingKey() + "':'" + message + "'");
+        
+        translatedText.set(translateToFrench(message));
+        System.out.println(translatedText);   
       }
     };
-    channel.basicConsume(queueName, true, consumer);
-  }*/
+    channel.basicConsume(queueName, true, consumer);  
+    
+    
+    
+    Thread.sleep(500);
+    System.out.println(translatedText);   
+    
+    if(translatedText.get() != null)
+    {
+        String routingKey = "tp2.test";
+        channel.basicPublish(EXCHANGE_NAME, routingKey, null, translatedText.toString().getBytes());
+        System.out.println(" [x] Sent '" + routingKey + "':'" + translatedText + "'");
+    }
+
+  }
   
   //https://tech.yandex.com/translate/doc/dg/reference/translate-docpage/
   //https://stackoverflow.com/questions/2793150/how-to-use-java-net-urlconnection-to-fire-and-handle-http-requests
@@ -82,14 +94,5 @@ public class P2 {
           System.out.println("Exception: " + e.getMessage());
       }
       return frenchText; 
-  }
-  
-  public static void main(String [] args)
-  {
-
-      String text = "Where is Charlie?";
-      System.out.println(text);
-      String frenchText = translateToFrench(text);
-      System.out.println(frenchText);
   }
 }
