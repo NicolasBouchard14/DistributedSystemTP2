@@ -4,6 +4,7 @@ import javax.net.ssl.HttpsURLConnection;
 import java.net.*;
 import com.rabbitmq.client.*;
 import java.util.concurrent.atomic.*;
+import com.eclipsesource.json.*;
 
 import java.io.*;
 
@@ -20,7 +21,7 @@ public class P2 {
     channel.exchangeDeclare(EXCHANGE_NAME, "topic");
     String queueName = channel.queueDeclare().getQueue();
     
-    channel.queueBind(queueName, EXCHANGE_NAME, bindingKey);
+    channel.queueBind(queueName, EXCHANGE_NAME, "tp2.texte");
     System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
     
     AtomicReference<String> translatedText = new AtomicReference<String>();
@@ -32,8 +33,11 @@ public class P2 {
         String message = new String(body, "UTF-8");
         System.out.println(" [x] Received '" + envelope.getRoutingKey() + "':'" + message + "'");
         
-        translatedText.set(translateToFrench(message));
-        System.out.println(translatedText);   
+        JsonValue jsonObject = Json.parse(translateToFrench(message)).asObject();
+       // System.out.println(jsonObject);
+        
+        //translatedText.set(jsonObject.getString("text"));
+        //System.out.println(translatedText);   
       }
     };
     channel.basicConsume(queueName, true, consumer);  
@@ -56,7 +60,7 @@ public class P2 {
   //https://stackoverflow.com/questions/2793150/how-to-use-java-net-urlconnection-to-fire-and-handle-http-requests
   private static String translateToFrench (String text)
   {
-      String frenchText = "";
+      String jsonResponse = "";
       
       try
       {
@@ -85,7 +89,7 @@ public class P2 {
             InputStream response = connection.getInputStream();
             
             java.util.Scanner s = new java.util.Scanner(response).useDelimiter("\\A");
-            frenchText = s.hasNext() ? s.next() : "";
+            jsonResponse = s.hasNext() ? s.next() : "";
             
             
       }
@@ -93,6 +97,6 @@ public class P2 {
       {
           System.out.println("Exception: " + e.getMessage());
       }
-      return frenchText; 
+      return jsonResponse; 
   }
 }
