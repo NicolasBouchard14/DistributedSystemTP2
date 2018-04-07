@@ -12,9 +12,9 @@ import java.io.*;
 
 //https://stackoverflow.com/questions/26811924/spring-amqp-rabbitmq-3-3-5-access-refused-login-was-refused-using-authentica
 public class P2 {
-  private static final String EXCHANGE_NAME = "topic_logs";
 
   public static void main(String[] argv) throws Exception {
+    String EXCHANGE_NAME = "topic_logs";
     ConnectionFactory factory = new ConnectionFactory();
     /*factory.setHost("localhost");
     factory.setUsername("guest");
@@ -51,7 +51,7 @@ public class P2 {
             {
                 Channel senderChannel = connection.createChannel();
                 senderChannel.exchangeDeclare(EXCHANGE_NAME, "topic");
-                String routingKey = "tp2.test";
+                String routingKey = "tp2.save";
                 senderChannel.basicPublish(EXCHANGE_NAME, routingKey, null, translatedText.toString().getBytes());
                 System.out.println(" [x] Sent '" + routingKey + "':'" + translatedText + "'");
             }
