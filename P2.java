@@ -4,7 +4,9 @@ import javax.net.ssl.HttpsURLConnection;
 import java.net.*;
 import com.rabbitmq.client.*;
 import java.util.concurrent.atomic.*;
-import com.eclipsesource.json.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import java.io.*;
 
@@ -14,59 +16,55 @@ public class P2 {
 
   public static void main(String[] argv) throws Exception {
     ConnectionFactory factory = new ConnectionFactory();
-    factory.setHost("localhost");
+    /*factory.setHost("localhost");
     factory.setUsername("guest");
     factory.setPassword("guest");
     factory.setPort(5672);
-    factory.setVirtualHost("/");
+    factory.setVirtualHost("/");*/
 		
     Connection connection = factory.newConnection();
-    Channel channel = connection.createChannel();
+    Channel receiverChannel = connection.createChannel();
 
-    channel.exchangeDeclare(EXCHANGE_NAME, "topic");
-    String queueName = channel.queueDeclare().getQueue();
+    receiverChannel.exchangeDeclare(EXCHANGE_NAME, "topic");
+    String queueName = receiverChannel.queueDeclare().getQueue();
     
-<<<<<<< HEAD
-    channel.queueBind(queueName, EXCHANGE_NAME, "tp2.texte");
-=======
-    String cleDeLiaison = "tp2.texte";
-    
-    channel.queueBind(queueName, EXCHANGE_NAME, cleDeLiaison);
-    
->>>>>>> a3b6f7a439fbe7466f4f1dff9e00d23249b6b4c5
+    receiverChannel.queueBind(queueName, EXCHANGE_NAME, "tp2.texte");
+
     System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
     
     AtomicReference<String> translatedText = new AtomicReference<String>();
     
-    Consumer consumer = new DefaultConsumer(channel) {
+    Consumer consumer = new DefaultConsumer(receiverChannel) {
       @Override
       public void handleDelivery(String consumerTag, Envelope envelope,
                                  AMQP.BasicProperties properties, byte[] body) throws IOException {
         String message = new String(body, "UTF-8");
         System.out.println(" [x] Received '" + envelope.getRoutingKey() + "':'" + message + "'");
         
-        JsonValue jsonObject = Json.parse(translateToFrench(message)).asObject();
-       // System.out.println(jsonObject);
-        
-        //translatedText.set(jsonObject.getString("text"));
-        //System.out.println(translatedText);   
+        ObjectMapper objMapper = new ObjectMapper();
+        try
+        {
+            TranslationResponse transResponse = objMapper.readValue(translateToFrench(message), TranslationResponse.class);
+            translatedText.set(transResponse.getText()[0]);
+            
+            if(translatedText.get() != null)
+            {
+                Channel senderChannel = connection.createChannel();
+                senderChannel.exchangeDeclare(EXCHANGE_NAME, "topic");
+                String routingKey = "tp2.test";
+                senderChannel.basicPublish(EXCHANGE_NAME, routingKey, null, translatedText.toString().getBytes());
+                System.out.println(" [x] Sent '" + routingKey + "':'" + translatedText + "'");
+            }
+        }
+        catch (JsonParseException e) { e.printStackTrace();}
+        catch (JsonMappingException e) { e.printStackTrace(); }
+        catch (IOException e) { e.printStackTrace(); }
       }
     };
-    channel.basicConsume(queueName, true, consumer);  
-    
-    
-    
-    Thread.sleep(500);
-    System.out.println(translatedText);   
-    
-    if(translatedText.get() != null)
-    {
-        String routingKey = "tp2.test";
-        channel.basicPublish(EXCHANGE_NAME, routingKey, null, translatedText.toString().getBytes());
-        System.out.println(" [x] Sent '" + routingKey + "':'" + translatedText + "'");
-    }
-
+    receiverChannel.basicConsume(queueName, true, consumer);  
   }
+  
+  
   
   //https://tech.yandex.com/translate/doc/dg/reference/translate-docpage/
   //https://stackoverflow.com/questions/2793150/how-to-use-java-net-urlconnection-to-fire-and-handle-http-requests
