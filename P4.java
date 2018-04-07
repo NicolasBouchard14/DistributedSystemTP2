@@ -1,5 +1,3 @@
-package topic;
-
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;

@@ -15,13 +15,25 @@ public class P2 {
   public static void main(String[] argv) throws Exception {
     ConnectionFactory factory = new ConnectionFactory();
     factory.setHost("localhost");
+    factory.setUsername("guest");
+    factory.setPassword("guest");
+    factory.setPort(5672);
+    factory.setVirtualHost("/");
+		
     Connection connection = factory.newConnection();
     Channel channel = connection.createChannel();
 
     channel.exchangeDeclare(EXCHANGE_NAME, "topic");
     String queueName = channel.queueDeclare().getQueue();
     
+<<<<<<< HEAD
     channel.queueBind(queueName, EXCHANGE_NAME, "tp2.texte");
+=======
+    String cleDeLiaison = "tp2.texte";
+    
+    channel.queueBind(queueName, EXCHANGE_NAME, cleDeLiaison);
+    
+>>>>>>> a3b6f7a439fbe7466f4f1dff9e00d23249b6b4c5
     System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
     
     AtomicReference<String> translatedText = new AtomicReference<String>();
