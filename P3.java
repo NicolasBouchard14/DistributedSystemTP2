@@ -44,6 +44,15 @@ public class P3 {
         String base64Result = imgToBase64String(buffer, "png"); // acroteau: il faut png ou jpg et non BufferedImage, c'était le bug qui empêchait p3 de marcher
         
         System.out.println("\n\n\n"+base64Result);
+        
+        // TODO: créer une classe pour envoyer les resultats en json a P4
+        
+        /*Channel senderChannel = connection.createChannel();
+        senderChannel.exchangeDeclare(EXCHANGE_NAME, "topic");
+        String routingKey = "tp2.save";
+        senderChannel.basicPublish(EXCHANGE_NAME, routingKey, null, jsonString.getBytes());
+        System.out.println(" [x] Sent '" + routingKey + "':'" + translatedText + "'");*/
+        
       }
     };
     channel.basicConsume(queueName, true, consumer);  
