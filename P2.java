@@ -47,12 +47,14 @@ public class P2 {
             TranslationResponse transResponse = objMapper.readValue(translateToFrench(message), TranslationResponse.class);
             translatedText.set(transResponse.getText()[0]);
             
+            String jsonString = objMapper.writeValueAsString(transResponse); // permet de passer tout l'objet en json à P4
+            
             if(translatedText.get() != null)
             {
                 Channel senderChannel = connection.createChannel();
                 senderChannel.exchangeDeclare(EXCHANGE_NAME, "topic");
                 String routingKey = "tp2.save";
-                senderChannel.basicPublish(EXCHANGE_NAME, routingKey, null, translatedText.toString().getBytes());
+                senderChannel.basicPublish(EXCHANGE_NAME, routingKey, null, jsonString.getBytes());
                 System.out.println(" [x] Sent '" + routingKey + "':'" + translatedText + "'");
             }
         }
