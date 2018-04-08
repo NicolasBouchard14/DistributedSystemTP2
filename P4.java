@@ -47,7 +47,7 @@ public class P4 {
 				// Convert JSON string to Object
 				TranslationResponse responseText = mapper.readValue(message, TranslationResponse.class);
 				
-				if(DatabaseHelper.InsertText(responseText.getText()[0], responseText.getText()[0]))
+				if(DatabaseHelper.InsertText(responseText.getOrigText(), responseText.getText()[0]))
 				{
 					System.out.println("ok");
 				}

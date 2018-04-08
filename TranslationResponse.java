@@ -3,6 +3,7 @@ public class TranslationResponse
 	private int code;
 	private String lang;
 	private String[] text;
+	private String origText;
 	
 	public void setCode(int code)
 	{
@@ -29,5 +30,14 @@ public class TranslationResponse
 	public String[] getText()
 	{
 		return text;
+	}
+	
+	public void setOrigText(String text)
+	{
+		this.origText = text;
+	}
+	public String getOrigText()
+	{
+		return origText;
 	}
 }

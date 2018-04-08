@@ -45,6 +45,8 @@ public class P2 {
         try
         {
             TranslationResponse transResponse = objMapper.readValue(translateToFrench(message), TranslationResponse.class);
+            transResponse.setOrigText(message);
+            
             translatedText.set(transResponse.getText()[0]);
             
             String jsonString = objMapper.writeValueAsString(transResponse); // permet de passer tout l'objet en json à P4
