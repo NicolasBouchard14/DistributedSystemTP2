@@ -8,7 +8,7 @@ import java.sql.PreparedStatement;
 
 public class DatabaseHelper {
 
-    private static String database = "tp2_output";
+    private static String database = "TP2_output";
     private static String user = "root";
     private static String password = "";
     private static String hostname = "localhost";
@@ -48,7 +48,7 @@ public class DatabaseHelper {
 
             Statement stmt = conn.createStatement();
 
-            String sql = "INSERT INTO texte VALUES ("+en_text+", "+fr_text+")";
+            String sql = "INSERT INTO texte VALUES (null, \""+en_text+"\", \""+fr_text+"\")";
             stmt.executeUpdate(sql);
 
         }

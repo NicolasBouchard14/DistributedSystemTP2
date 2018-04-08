@@ -1,7 +1,9 @@
 import com.rabbitmq.client.*;
-
 import java.io.IOException;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 public class P4 {
 
@@ -35,7 +37,27 @@ public class P4 {
 		      public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
 		          throws IOException {
 		        String message = new String(body, "UTF-8");
+		        
 		        System.out.println(" [x] Message recu: '" + message + "', cle de routage: '"+envelope.getRoutingKey()+" '");
+		        
+		        //https://www.mkyong.com/java/how-to-convert-java-object-to-from-json-jackson/
+		        ObjectMapper mapper = new ObjectMapper();
+
+			try {
+				// Convert JSON string to Object
+				TranslationResponse responseText = mapper.readValue(message, TranslationResponse.class);
+				
+				if(DatabaseHelper.InsertText(responseText.getText()[0], responseText.getText()[0]))
+				{
+					System.out.println("ok");
+				}
+
+			} catch (JsonGenerationException e) {
+				e.printStackTrace();
+			} catch (JsonMappingException e) {
+				e.printStackTrace();
+			}
+		        
 		      }
 		};
 		receiverChannel.basicConsume(queueName, true, consumer);		
