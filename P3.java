@@ -39,9 +39,11 @@ public class P3 {
         String message = new String(body, "UTF-8");
         System.out.println(" [x] Received '" + envelope.getRoutingKey() + "':'" + message + "'");
         
-        /*BufferedImage buffer = base64StringToImg(message);
+        BufferedImage buffer = base64StringToImg(message);
         buffer = resizeImage(buffer, 100, 100);
-        String base64Result = imgToBase64String(buffer, "BufferedImage");*/
+        String base64Result = imgToBase64String(buffer, "png"); // acroteau: il faut png ou jpg et non BufferedImage, c'était le bug qui empêchait p3 de marcher
+        
+        System.out.println("\n\n\n"+base64Result);
       }
     };
     channel.basicConsume(queueName, true, consumer);  
@@ -74,6 +76,7 @@ public class P3 {
     public static String imgToBase64String(final RenderedImage img, final String formatName) 
     {
         final ByteArrayOutputStream os = new ByteArrayOutputStream();
+        
         try 
         {
             ImageIO.write(img, formatName, Base64.getEncoder().wrap(os));
