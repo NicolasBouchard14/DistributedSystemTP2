@@ -13,7 +13,7 @@ public class P4 {
 
 	public static void main(String[] argv) throws Exception {
 
-		String EXCHANGE_NAME = "echangeur_topic02";
+		String EXCHANGE_NAME = "topic_logs";
 		String NOM_FILE_DATTENTE = "file_d_attente02";
 		String nomUtilisateur = "guest"; // par defaut
 		String motDePasse = "guest"; // par defaut
