@@ -15,7 +15,6 @@ import com.rabbitmq.client.*;
 import java.io.IOException;
 import java.util.concurrent.atomic.*;
 
-//https://stackoverflow.com/questions/26811924/spring-amqp-rabbitmq-3-3-5-access-refused-login-was-refused-using-authentica
 public class P3 {
      
   private static final String EXCHANGE_NAME = "topic_logs";
