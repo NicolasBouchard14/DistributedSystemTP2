@@ -22,6 +22,8 @@ public class P3 {
   public static void main(String[] argv) throws Exception {
     ConnectionFactory factory = new ConnectionFactory();
     factory.setHost("192.168.102.128");
+    factory.setUsername("mqadmin");
+    factory.setPassword("mqadmin");
     Connection connection = factory.newConnection();
     Channel channel = connection.createChannel();
 

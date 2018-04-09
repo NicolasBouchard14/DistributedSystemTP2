@@ -11,11 +11,9 @@ public class P4 {
 
 		String EXCHANGE_NAME = "topic_logs";
 		String NOM_FILE_DATTENTE = "file_d_attente02";
-		/*String nomUtilisateur = "guest"; // par defaut
-		String motDePasse = "guest"; // par defaut
-		int numeroPort = 5672; // par defaut
-		String virtualHostName = "/"; */// par defaut
 		String hostName = "192.168.102.128";
+		factory.setUsername("mqadmin");
+		factory.setPassword("mqadmin");
 
 		// se connecter au broker RabbitMQ
 		ConnectionFactory factory = new ConnectionFactory();
