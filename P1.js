@@ -7,7 +7,7 @@ var fs = require("fs");
 var content = fs.readFileSync("tp2_input.json");
 var jsonContent = JSON.parse(content);
 
-amqp.connect('amqp://localhost', function(err, conn) {
+amqp.connect('amqp://192.168.102.128', function(err, conn) {
   conn.createChannel(function(err, ch) {
     var ex = 'topic_logs';
     var key = 'tp2.images';

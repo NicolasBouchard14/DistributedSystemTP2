@@ -16,8 +16,8 @@ public class P2 {
   public static void main(String[] argv) throws Exception {
     String EXCHANGE_NAME = "topic_logs";
     ConnectionFactory factory = new ConnectionFactory();
-    /*factory.setHost("localhost");
-    factory.setUsername("guest");
+    factory.setHost("192.168.102.128");
+    /*factory.setUsername("guest");
     factory.setPassword("guest");
     factory.setPort(5672);
     factory.setVirtualHost("/");*/
