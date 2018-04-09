@@ -17,9 +17,9 @@ public class P2 {
     String EXCHANGE_NAME = "topic_logs";
     ConnectionFactory factory = new ConnectionFactory();
     factory.setHost("192.168.102.128");
-    /*factory.setUsername("guest");
-    factory.setPassword("guest");
-    factory.setPort(5672);
+    factory.setUsername("mqadmin");
+    factory.setPassword("mqadmin");
+    /*factory.setPort(5672);
     factory.setVirtualHost("/");*/
 		
     Connection connection = factory.newConnection();
