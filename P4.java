@@ -14,8 +14,8 @@ public class P4 {
 		/*String nomUtilisateur = "guest"; // par defaut
 		String motDePasse = "guest"; // par defaut
 		int numeroPort = 5672; // par defaut
-		String virtualHostName = "/"; // par defaut
-		String hostName = "localhost";*/
+		String virtualHostName = "/"; */// par defaut
+		String hostName = "192.168.102.128";
 
 		// se connecter au broker RabbitMQ
 		ConnectionFactory factory = new ConnectionFactory();

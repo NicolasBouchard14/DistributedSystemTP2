@@ -1,0 +1,1 @@
+javac -cp .:amqp-client-5.1.2.jar:imgscalr-lib-4.2.jar:jackson-annotations-2.9.5.jar:jackson-core-2.9.5.jar:jackson-databind-2.9.5.jar:mysql-connector-java-5.1.46.jar:slf4j-api-1.7.25.jar:slf4j-simple-1.7.25.jar $1
