@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 public class P4 {
 
@@ -11,12 +12,14 @@ public class P4 {
 
 		String EXCHANGE_NAME = "topic_logs";
 		String NOM_FILE_DATTENTE = "file_d_attente02";
-		String hostName = "192.168.102.128";
-		factory.setUsername("mqadmin");
-		factory.setPassword("mqadmin");
+		String hostName = "localhost"; //"192.168.102.128";
 
 		// se connecter au broker RabbitMQ
 		ConnectionFactory factory = new ConnectionFactory();
+		factory.setHost(hostName);
+                //factory.setUsername("mqadmin");
+                //factory.setPassword("mqadmin");
+		
 		Connection connexion = factory.newConnection();
 
 		// ouvrir un canal de communication avec le Broker pour l'envoi et la
@@ -40,15 +43,31 @@ public class P4 {
 		        
 		        //https://www.mkyong.com/java/how-to-convert-java-object-to-from-json-jackson/
 		        ObjectMapper mapper = new ObjectMapper();
+		        SimpleModule module = new SimpleModule();
+    			module.addDeserializer(Response.class, new ResponseDeserializer());
+    			mapper.registerModule(module);
 
 			try {
 				// Convert JSON string to Object
-				TranslationResponse responseText = mapper.readValue(message, TranslationResponse.class);
+				Response responseText = mapper.readValue(message, Response.class);
 				
-				if(DatabaseHelper.InsertText(responseText.getOrigText(), responseText.getText()[0]))
+				if(responseText instanceof TranslationResponse)
 				{
-					System.out.println("ok");
+					if(DatabaseHelper.InsertText(((TranslationResponse)responseText).getOrig(), ((TranslationResponse)responseText).getText()[0]))
+					{
+						System.out.println("ok");
+					}
 				}
+				else if(responseText instanceof ResizeResponse)
+				{
+					String[] saveImgs = {((ResizeResponse)responseText).getOrig(), ((ResizeResponse)responseText).getImg1(), ((ResizeResponse)responseText).getImg2()};
+				
+					if(DatabaseHelper.InsertImage(saveImgs))
+					{
+						System.out.println("ok");
+					}
+				}
+				
 
 			} catch (JsonGenerationException e) {
 				e.printStackTrace();
@@ -58,6 +77,7 @@ public class P4 {
 		        
 		      }
 		};
-		receiverChannel.basicConsume(queueName, true, consumer);		
+		receiverChannel.basicConsume(queueName, true, consumer);
+		
 	}
 }

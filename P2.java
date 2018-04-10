@@ -16,9 +16,10 @@ public class P2 {
   public static void main(String[] argv) throws Exception {
     String EXCHANGE_NAME = "topic_logs";
     ConnectionFactory factory = new ConnectionFactory();
-    factory.setHost("192.168.102.128");
-    factory.setUsername("mqadmin");
-    factory.setPassword("mqadmin");
+    factory.setHost("localhost");
+    //factory.setHost("192.168.102.128");
+    //factory.setUsername("mqadmin");
+    //factory.setPassword("mqadmin");
     /*factory.setPort(5672);
     factory.setVirtualHost("/");*/
 		
@@ -45,7 +46,7 @@ public class P2 {
         try
         {
             TranslationResponse transResponse = objMapper.readValue(translateToFrench(message), TranslationResponse.class);
-            transResponse.setOrigText(message);
+            transResponse.setOrig(message);
             
             translatedText.set(transResponse.getText()[0]);
             

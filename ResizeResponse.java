@@ -1,17 +1,8 @@
-public class ResizeResponse 
+public class ResizeResponse extends Response
 {
-	private String origImg;
+	//private String orig;
 	private String img1;
 	private String img2;
-	
-	public void setOrig(String img)
-	{
-		this.origImg = img;
-	}
-	public String getOrig()
-	{
-		return origImg;
-	}
 	
 	public void setImg1(String img)
 	{

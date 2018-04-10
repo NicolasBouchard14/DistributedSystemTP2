@@ -14,6 +14,9 @@ import java.nio.charset.StandardCharsets;
 import com.rabbitmq.client.*;
 import java.io.IOException;
 import java.util.concurrent.atomic.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 public class P3 {
      
@@ -21,9 +24,10 @@ public class P3 {
 
   public static void main(String[] argv) throws Exception {
     ConnectionFactory factory = new ConnectionFactory();
-    factory.setHost("192.168.102.128");
+    factory.setHost("localhost");
+    /*factory.setHost("192.168.102.128");
     factory.setUsername("mqadmin");
-    factory.setPassword("mqadmin");
+    factory.setPassword("mqadmin");*/
     Connection connection = factory.newConnection();
     Channel channel = connection.createChannel();
 
@@ -43,16 +47,22 @@ public class P3 {
         BufferedImage buffer = base64StringToImg(message);
         buffer = resizeImage(buffer, 100, 100);
         String base64Result = imgToBase64String(buffer, "png"); // acroteau: il faut png ou jpg et non BufferedImage, c'était le bug qui empêchait p3 de marcher
+        BufferedImage buffer2 = resizeImage(buffer, 50, 50);
+        String base64Result2 = imgToBase64String(buffer, "png");
         
-        System.out.println("\n\n\n"+base64Result);
+        ObjectMapper objMapper = new ObjectMapper();
+        ResizeResponse retour = new ResizeResponse();
+        retour.setOrig(message);
+        retour.setImg1(base64Result);
+        retour.setImg2(base64Result);
+            
+        String jsonString = objMapper.writeValueAsString(retour); // permet de passer tout l'objet en json à P4
         
-        // TODO: créer une classe pour envoyer les resultats en json a P4
-        
-        /*Channel senderChannel = connection.createChannel();
+        Channel senderChannel = connection.createChannel();
         senderChannel.exchangeDeclare(EXCHANGE_NAME, "topic");
         String routingKey = "tp2.save";
         senderChannel.basicPublish(EXCHANGE_NAME, routingKey, null, jsonString.getBytes());
-        System.out.println(" [x] Sent '" + routingKey + "':'" + translatedText + "'");*/
+        System.out.println(" [x] Sent '" + routingKey + "':'" + base64Result + "'");
         
       }
     };
