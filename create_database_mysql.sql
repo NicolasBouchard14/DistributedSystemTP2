@@ -11,8 +11,8 @@ create table texte(
 
 create table image(
 	Id int NOT NULL AUTO_INCREMENT,
-	Orig blob,
-	F1 blob,
-	F2 blob,
+	Orig mediumblob,
+	F1 mediumblob,
+	F2 mediumblob,
 	PRIMARY KEY (Id)
 );

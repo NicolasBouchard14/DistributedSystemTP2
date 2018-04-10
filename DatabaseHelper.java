@@ -73,7 +73,7 @@ public class DatabaseHelper {
 
         try {
 
-            String sql = "INSERT INTO image VALUES (?, ?, ?)";
+            String sql = "INSERT INTO image VALUES (null, ?, ?, ?)";
             
             PreparedStatement stm = conn.prepareStatement(sql);
             
