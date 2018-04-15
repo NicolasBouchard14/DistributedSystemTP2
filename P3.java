@@ -48,7 +48,7 @@ public class P3 {
         buffer = resizeImage(buffer, 100, 100);
         String base64Result = imgToBase64String(buffer, "png"); // acroteau: il faut png ou jpg et non BufferedImage, c'était le bug qui empêchait p3 de marcher
         BufferedImage buffer2 = resizeImage(buffer, 50, 50);
-        String base64Result2 = imgToBase64String(buffer, "png");
+        String base64Result2 = imgToBase64String(buffer2, "png");
         
         ObjectMapper objMapper = new ObjectMapper();
         ResizeResponse retour = new ResizeResponse();
