@@ -10,55 +10,52 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 import java.io.*;
 
-//https://stackoverflow.com/questions/26811924/spring-amqp-rabbitmq-3-3-5-access-refused-login-was-refused-using-authentica
 public class P2 {
 
   public static void main(String[] argv) throws Exception {
+      
     String EXCHANGE_NAME = "topic_logs";
     ConnectionFactory factory = new ConnectionFactory();
     factory.setHost("localhost");
-    //factory.setHost("192.168.102.128");
-    //factory.setUsername("mqadmin");
-    //factory.setPassword("mqadmin");
-    /*factory.setPort(5672);
-    factory.setVirtualHost("/");*/
-		
+	
+    //Connection au Broker RabbitMQ et création du canal de communication qui servira à la réception
     Connection connection = factory.newConnection();
     Channel receiverChannel = connection.createChannel();
 
+    //Faire le lien avec l'échangeur topic, puis association à la bonne file grâce à la clé "tp2.texte"
     receiverChannel.exchangeDeclare(EXCHANGE_NAME, "topic");
     String queueName = receiverChannel.queueDeclare().getQueue();
-    
     receiverChannel.queueBind(queueName, EXCHANGE_NAME, "tp2.texte");
-
     System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
-    
-    AtomicReference<String> translatedText = new AtomicReference<String>();
-    
+        
     Consumer consumer = new DefaultConsumer(receiverChannel) {
       @Override
-      public void handleDelivery(String consumerTag, Envelope envelope,
-                                 AMQP.BasicProperties properties, byte[] body) throws IOException {
+      public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+        
         String message = new String(body, "UTF-8");
         System.out.println(" [x] Received '" + envelope.getRoutingKey() + "':'" + message + "'");
         
         ObjectMapper objMapper = new ObjectMapper();
+        
         try
         {
+            //Appelle la méthode pour la traduction, et désérialise l'objet retourné par cette méthode en un objet "TranslationResponse"
             TranslationResponse transResponse = objMapper.readValue(translateToFrench(message), TranslationResponse.class);
-            transResponse.setOrig(message);
+            //Ajout du message original à l'objet
+            transResponse.setOrig(message);            
+            //Sérialization de l'objet avant de la retourner à P4
+            String jsonString = objMapper.writeValueAsString(transResponse); 
             
-            translatedText.set(transResponse.getText()[0]);
-            
-            String jsonString = objMapper.writeValueAsString(transResponse); // permet de passer tout l'objet en json à P4
-            
-            if(translatedText.get() != null)
+            //Envoi vers P4 si le texte traduit n'est pas null
+            if(transResponse.getText()[0] != null || transResponse.getText()[0] != "")
             {
+                //On peut utiliser la même connexion, mais il faut créer un nouveau canal pour l'envoi
                 Channel senderChannel = connection.createChannel();
                 senderChannel.exchangeDeclare(EXCHANGE_NAME, "topic");
                 String routingKey = "tp2.save";
+                //Envoi du message ainsi que la clé de routage à l'échangeur
                 senderChannel.basicPublish(EXCHANGE_NAME, routingKey, null, jsonString.getBytes());
-                System.out.println(" [x] Sent '" + routingKey + "':'" + translatedText + "'");
+                System.out.println(" [x] Sent '" + routingKey + "':'" + transResponse.getText()[0] + "'");
             }
         }
         catch (JsonParseException e) { e.printStackTrace();}

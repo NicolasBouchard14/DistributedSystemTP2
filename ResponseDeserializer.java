@@ -11,17 +11,23 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResponseDeserializer extends StdDeserializer<Response> {
-    public ResponseDeserializer() {
+public class ResponseDeserializer extends StdDeserializer<Response> 
+{
+    public ResponseDeserializer() 
+    {
         super(Response.class);
     }
 
     @Override
-    public Response deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public Response deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException 
+    {
+        
         JsonNode node = p.readValueAsTree();
         JsonNode code = node.findValue("code");
         Response result;
-        if (code != null && !code.isNull()) {
+        
+        if (code != null && !code.isNull()) 
+        {
             result = new TranslationResponse();
             ((TranslationResponse)result).setCode(code.asInt());
             ((TranslationResponse)result).setLang(node.findValue("lang").asText());
@@ -35,12 +41,16 @@ public class ResponseDeserializer extends StdDeserializer<Response> {
             
             ((TranslationResponse)result).setText(texte.toArray(new String[0]));
             
-        } else {
+        } 
+        else 
+        {
             result = new ResizeResponse();
             ((ResizeResponse)result).setImg1(node.findValue("img1").asText());
             ((ResizeResponse)result).setImg2(node.findValue("img2").asText());
         }
+        
         result.setOrig(node.findValue("orig").asText());
+        
         return result;
     }
 }
