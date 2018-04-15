@@ -49,9 +49,11 @@ public class P2 {
             //Envoi vers P4 si le texte traduit n'est pas null
             if(transResponse.getText()[0] != null || transResponse.getText()[0] != "")
             {
+                //On peut utiliser la même connexion, mais il faut créer un nouveau canal pour l'envoi
                 Channel senderChannel = connection.createChannel();
                 senderChannel.exchangeDeclare(EXCHANGE_NAME, "topic");
                 String routingKey = "tp2.save";
+                //Envoi du message ainsi que la clé de routage à l'échangeur
                 senderChannel.basicPublish(EXCHANGE_NAME, routingKey, null, jsonString.getBytes());
                 System.out.println(" [x] Sent '" + routingKey + "':'" + transResponse.getText()[0] + "'");
             }
