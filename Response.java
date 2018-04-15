@@ -1,4 +1,5 @@
-public class Response{
+public class Response
+{
 	protected String orig;
 	
 	public void setOrig(String text)
