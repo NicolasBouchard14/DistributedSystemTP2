@@ -7,9 +7,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 public class P4 {
-
 	public static void main(String[] argv) throws Exception {
-
 		String EXCHANGE_NAME = "topic_logs";
 		String NOM_FILE_DATTENTE = "file_d_attente02";
 		String hostName = "192.168.102.128";
@@ -67,7 +65,6 @@ public class P4 {
 						System.out.println("ok");
 					}
 				}
-				
 
 			} catch (JsonGenerationException e) {
 				e.printStackTrace();
@@ -75,9 +72,8 @@ public class P4 {
 				e.printStackTrace();
 			}
 		        
-		      }
+		    }
 		};
 		receiverChannel.basicConsume(queueName, true, consumer);
-		
 	}
 }
