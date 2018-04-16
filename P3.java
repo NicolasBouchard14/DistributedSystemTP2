@@ -25,7 +25,7 @@ public class P3 {
   public static void main(String[] argv) throws Exception {
     
     ConnectionFactory factory = new ConnectionFactory();
-    factory.setHost("192.168.102.130");
+    factory.setHost("localhost");
     factory.setUsername("mqadmin");
     factory.setPassword("mqadmin");
     Connection connection = factory.newConnection();
@@ -67,7 +67,7 @@ public class P3 {
         String routingKey = "tp2.save";
         //Envoi du message ainsi que la clé de routage à l'échangeur
         senderChannel.basicPublish(EXCHANGE_NAME, routingKey, null, jsonString.getBytes());
-        System.out.println(" [x] Sent '" + routingKey + "':'" + base64Result + "'");
+        System.out.println(" [x] Sent '" + routingKey + "':'" + jsonString + "'");
       }
     };
     channel.basicConsume(queueName, true, consumer);  

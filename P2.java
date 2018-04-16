@@ -16,9 +16,9 @@ public class P2 {
       
     String EXCHANGE_NAME = "topic_logs";
     ConnectionFactory factory = new ConnectionFactory();
-    factory.setHost("192.168.102.129");
-    factory.setUsername("mqadmin");
-    factory.setPassword("mqadmin");
+    //factory.setHost("master");
+    //factory.setUsername("mqadmin");
+    //factory.setPassword("mqadmin");
 	
     //Connection au Broker RabbitMQ et création du canal de communication qui servira à la réception
     Connection connection = factory.newConnection();
@@ -57,7 +57,7 @@ public class P2 {
                 String routingKey = "tp2.save";
                 //Envoi du message ainsi que la clé de routage à l'échangeur
                 senderChannel.basicPublish(EXCHANGE_NAME, routingKey, null, jsonString.getBytes());
-                System.out.println(" [x] Sent '" + routingKey + "':'" + transResponse.getText()[0] + "'");
+                System.out.println(" [x] Sent '" + routingKey + "':'" + jsonString + "'");
             }
         }
         catch (JsonParseException e) { e.printStackTrace();}
