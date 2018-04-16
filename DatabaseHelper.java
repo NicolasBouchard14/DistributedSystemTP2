@@ -10,7 +10,7 @@ public class DatabaseHelper {
 
     private static String database = "TP2_output";
     private static String user = "root";
-    private static String password = "";
+    private static String password = "test";
     private static String hostname = "localhost";
 
     private static Connection CreateConnection(){
