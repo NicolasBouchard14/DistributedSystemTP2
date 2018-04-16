@@ -16,7 +16,9 @@ public class P2 {
       
     String EXCHANGE_NAME = "topic_logs";
     ConnectionFactory factory = new ConnectionFactory();
-    factory.setHost("localhost");
+    factory.setHost("192.168.102.129");
+    factory.setUsername("mqadmin");
+    factory.setPassword("mqadmin");
 	
     //Connection au Broker RabbitMQ et création du canal de communication qui servira à la réception
     Connection connection = factory.newConnection();

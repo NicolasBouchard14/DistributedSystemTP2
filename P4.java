@@ -12,13 +12,13 @@ public class P4 {
 
 		String EXCHANGE_NAME = "topic_logs";
 		String NOM_FILE_DATTENTE = "file_d_attente02";
-		String hostName = "localhost"; //"192.168.102.128";
+		String hostName = "192.168.102.128";
 
 		// se connecter au broker RabbitMQ
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost(hostName);
-                //factory.setUsername("mqadmin");
-                //factory.setPassword("mqadmin");
+                factory.setUsername("mqadmin");
+                factory.setPassword("mqadmin");
 		
 		Connection connexion = factory.newConnection();
 
