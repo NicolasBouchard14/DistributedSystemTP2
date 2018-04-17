@@ -15,10 +15,11 @@ public class P2 {
   public static void main(String[] argv) throws Exception {
       
     String EXCHANGE_NAME = "topic_logs";
+    String QUEUE_NAME = "file_texte";
     ConnectionFactory factory = new ConnectionFactory();
-    //factory.setHost("master");
-    //factory.setUsername("mqadmin");
-    //factory.setPassword("mqadmin");
+    factory.setHost("vm1");
+    factory.setUsername("mqadmin");
+    factory.setPassword("mqadmin");
 	
     //Connection au Broker RabbitMQ et création du canal de communication qui servira à la réception
     Connection connection = factory.newConnection();
@@ -26,8 +27,8 @@ public class P2 {
 
     //Faire le lien avec l'échangeur topic, puis association à la bonne file grâce à la clé "tp2.texte"
     receiverChannel.exchangeDeclare(EXCHANGE_NAME, "topic");
-    String queueName = receiverChannel.queueDeclare().getQueue();
-    receiverChannel.queueBind(queueName, EXCHANGE_NAME, "tp2.texte");
+    receiverChannel.queueDeclare(QUEUE_NAME, true, false, false, null);
+    receiverChannel.queueBind(QUEUE_NAME, EXCHANGE_NAME, "tp2.texte");
     System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
         
     Consumer consumer = new DefaultConsumer(receiverChannel) {
@@ -54,6 +55,7 @@ public class P2 {
                 //On peut utiliser la même connexion, mais il faut créer un nouveau canal pour l'envoi
                 Channel senderChannel = connection.createChannel();
                 senderChannel.exchangeDeclare(EXCHANGE_NAME, "topic");
+                senderChannel.queueDeclare("file_save", true, false, false, null);
                 String routingKey = "tp2.save";
                 //Envoi du message ainsi que la clé de routage à l'échangeur
                 senderChannel.basicPublish(EXCHANGE_NAME, routingKey, null, jsonString.getBytes());
@@ -65,7 +67,7 @@ public class P2 {
         catch (IOException e) { e.printStackTrace(); }
       }
     };
-    receiverChannel.basicConsume(queueName, true, consumer);  
+    receiverChannel.basicConsume(QUEUE_NAME, true, consumer);  
   }
   
   

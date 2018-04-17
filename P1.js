@@ -21,6 +21,7 @@ amqp.connect('amqp://mqadmin:mqadmin@localhost:5672', function(err, conn) {
         for (var j=0; j<jsonContent[i].paragraphes.length; j++)
         {
             ch.assertExchange(ex, 'topic', {durable: false});
+            ch.assertQueue(key1);
             ch.publish(ex, key1, new Buffer(jsonContent[i].paragraphes[j]));
             console.log(" [x] Sent %s:'%s'", key1, jsonContent[i].paragraphes[j]);
         }

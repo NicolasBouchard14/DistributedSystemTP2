@@ -9,8 +9,8 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 public class P4 {
 	public static void main(String[] argv) throws Exception {
 		String EXCHANGE_NAME = "topic_logs";
-		String NOM_FILE_DATTENTE = "file_d_attente02";
-		String hostName = "192.168.102.128";
+		String QUEUE_NAME = "file_save";
+		String hostName = "vm1";
 
 		// se connecter au broker RabbitMQ
 		ConnectionFactory factory = new ConnectionFactory();
@@ -25,9 +25,9 @@ public class P4 {
 		Channel receiverChannel = connexion.createChannel();
 		receiverChannel.exchangeDeclare(EXCHANGE_NAME, "topic");
 		
-		// recuperer le nom d file d'attente associee a la clé de liaison 
-		String queueName = receiverChannel.queueDeclare().getQueue();
-		receiverChannel.queueBind(queueName, EXCHANGE_NAME, "tp2.save");
+		// recuperer le nom d file d'attente associee a la clé de liaison
+	    receiverChannel.queueDeclare(QUEUE_NAME, true, false, false, null);
+		receiverChannel.queueBind(QUEUE_NAME, EXCHANGE_NAME, "tp2.save");
 
 		System.out.println(" [*] En attente de messages ... pour arreter pressez CTRL+C");
 
@@ -74,6 +74,6 @@ public class P4 {
 		        
 		    }
 		};
-		receiverChannel.basicConsume(queueName, true, consumer);
+		receiverChannel.basicConsume(QUEUE_NAME, true, consumer);
 	}
 }

@@ -23,21 +23,20 @@ public class P3 {
   private static final String EXCHANGE_NAME = "topic_logs";
 
   public static void main(String[] argv) throws Exception {
-    
+    String QUEUE_NAME = "file_images";
     ConnectionFactory factory = new ConnectionFactory();
     factory.setHost("localhost");
     factory.setUsername("mqadmin");
     factory.setPassword("mqadmin");
     Connection connection = factory.newConnection();
-    Channel channel = connection.createChannel();
+    Channel receiverChannel = connection.createChannel();
 
-    channel.exchangeDeclare(EXCHANGE_NAME, "topic");
-    String queueName = channel.queueDeclare().getQueue();
-
-    channel.queueBind(queueName, EXCHANGE_NAME, "tp2.images");
+    receiverChannel.exchangeDeclare(EXCHANGE_NAME, "topic");
+    receiverChannel.queueDeclare(QUEUE_NAME, true, false, false, null);
+    receiverChannel.queueBind(QUEUE_NAME, EXCHANGE_NAME, "tp2.images");
     System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
     
-    Consumer consumer = new DefaultConsumer(channel) {
+    Consumer consumer = new DefaultConsumer(receiverChannel) {
       @Override
       public void handleDelivery(String consumerTag, Envelope envelope,
                                  AMQP.BasicProperties properties, byte[] body) throws IOException {
@@ -64,13 +63,14 @@ public class P3 {
         //On peut utiliser la même connexion, mais il faut créer un nouveau canal pour l'envoi
         Channel senderChannel = connection.createChannel();
         senderChannel.exchangeDeclare(EXCHANGE_NAME, "topic");
+        senderChannel.queueDeclare("file_save", true, false, false, null);
         String routingKey = "tp2.save";
         //Envoi du message ainsi que la clé de routage à l'échangeur
         senderChannel.basicPublish(EXCHANGE_NAME, routingKey, null, jsonString.getBytes());
         System.out.println(" [x] Sent '" + routingKey + "':'" + jsonString + "'");
       }
     };
-    channel.basicConsume(queueName, true, consumer);  
+    receiverChannel.basicConsume(QUEUE_NAME, true, consumer);  
   }
   
     //https://stackoverflow.com/questions/12879540/image-resizing-in-java-to-reduce-image-size#12879764
